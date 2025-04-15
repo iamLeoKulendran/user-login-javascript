@@ -1,135 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login KaiMig&reg;</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body onload="loaded()">
-    
-    
-    <div class="box-form">
+  <div class="box-form">
     <div class="left">
-        <h1>Welcome to KaiMig</h1>
-        <p>Join us and explore amazing features.</p>
-
-        
-    </div>  
-    <div class="right">
-        <div class="form">
-            <h3> User Login</h3>
-            <input type="text" id="username" class="username">
-            <label for="username">Username</label>
-            <input type="password" id="password" class="password">
-            <label for="password">Password</label>
-            <div id="error-message"></div>
-            <button id="okbtn" type="submit" class="login-button" onclick="LoginClicked()">Login</button>   
+      <img src="./bg1.png" class="backdrop" alt="backdrop">
+      <div class="overlay">
+        <img src="./kaizens.gif" class="overlay-image" alt="logo">
+      </div>
+      
+      <div class="left-center">
+        <div class="left-content">
+          <div class="left-center-text-large">YOUR TRUSTED GLOBAL</div>
+          <div class="left-center-text-large">INTEGRATION PROVIDER FOR</div>
+          <div class="left-center-text-large">ERP</div>
+          <div class="left-center-text-small">
+            <span>in this rapidly changing world of Cloud transformation -
+            </span><span class="italic">"Change for good"</span>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-
-
-<script>
-
-function showError(message) {
-        const errorEl = document.getElementById('error-message');
-        errorEl.innerText = message;
-        errorEl.style.display = 'block';
-    }
-    
-
-    function keypress(event) {
-        // detect event key
-        if (event.keyCode == 13) {
-            LoginClicked();
-        }
-    }
-    
-    function loaded() {
-        const username = document.getElementById("username");
-        username.focus();
-        username.addEventListener("keydown", keypress);
-        document.getElementById("password").addEventListener("keydown", keypress);
-    }
-    
-    async function LoginClicked() {
-            const username = document.getElementById('username').value
-            const password = document.getElementById('password').value
-    
-            // Validate input fields
-            if (username === "" || password === "") {
-                // alert("Please fill in all fields.");
-                showError("Please fill in all fields.");
-                return;
-            }
+    <div class="right">
+      <div class="login-container">
+        <div class="logo-mobile">
+          <img src="./kaizens.gif" alt="logo">
+        </div>
         
-            // Set request headers
-            const headers = {
-                'Content-Type': 'application/json',
-            };
-            
-            const s = sessionStorage.getItem("session");
-            if (s) {
-                const ws = JSON.parse(s);
-                if (ws.SessionGUID) {
-                    headers["Session-GUID"] = ws.SessionGUID;
-                }
-            }
-    
-                
-            const btn = document.getElementById('okbtn');
-            btn.disabled = true;
+        <div class="text-header">Welcome to KaiTest&reg;</div>
+        
+        <div class="form-group">
+          <div class="input-icon-wrapper">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="username" class="form-control" placeholder=" ">
+            <label for="username" class="form-control-label">Username</label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="input-icon-wrapper">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="password" class="form-control" placeholder=" ">
+            <label for="password" class="form-control-label">Password</label>
+            <i class="fas fa-eye-slash toggle-password" onclick="togglePassword()"></i>
+          </div>
+        </div>
+        
+        <div id="error-message" class="form-error" style="visibility: hidden;">
+          Error
+        </div>
+      
+        <progress id="progress" class="pure-material-progress-linear" style="visibility: hidden;"></progress>
+      
+        <button id="okbtn" class="full-btn" onclick="LoginClicked()">
+          <span>Log In</span>
+          <i class="fas fa-arrow-right btn-icon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 
-            // Send login data via fetch
-            console.log("xxxxxxxxx fetch : /login POST");
-            fetch('/api/login', {
-                method: 'POST',
-                    redirect: 'follow',
-                body: JSON.stringify(
-                    {
-                            Username: username,
-                            Password: password,
-                    }),
-                headers: headers
-            })
-
-            .then(response => {
-                if (response.redirected) {
-                    console.log("xxxxxxxxx fetch redirected: ", response);
-                    window.location.href = response.url;
-                    return
-                }
-                if (response.ok) {
-                    // Login successful, redirect to home page
-                    const redir = response.headers.get('Location');
-                    if (redir == "") {
-                        redir = "/";
-                    }
-                    console.log('redir:', redir);
-                    window.location.href = redir; // Redirect to home page
-                } else {
-                console.log('response:', response);
-                    // If login fails, show an error message
-                    // alert('Invalid username or password!');
-                    showError('Invalid username or password!');
-                    let btn = document.getElementById('okbtn');
-                    btn.disabled = false;
-                }
-            })
-            .catch(error => {
-                // Handle network errors or other unexpected issues
-                console.error('Error during login:', error);
-                // alert('An error occurred. Please try again.');
-                showError('An error occurred. Please try again.');
-            });
+  <script>
+    function showError(message) {
+      const errorEl = document.getElementById("error-message");
+      errorEl.innerText = message;
+      errorEl.style.visibility = "visible";
+      errorEl.classList.add("visible");
+      
+      // Add error styling to inputs
+      document.getElementById("username").classList.add("input-error");
+      document.getElementById("password").classList.add("input-error");
+      
+      // Remove error styling after 4 seconds
+      setTimeout(() => {
+        document.getElementById("username").classList.remove("input-error");
+        document.getElementById("password").classList.remove("input-error");
+        errorEl.classList.remove("visible");
+        setTimeout(() => {
+          errorEl.style.visibility = "hidden";
+        }, 300);
+      }, 4000);
+    }
     
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const toggleIcon = document.querySelector(".toggle-password");
+      
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+      } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+      }
+    }
+    
+    function keypress(event) {
+      // detect event key
+      if (event.keyCode == 13) {
+        LoginClicked();
+      }
+    }
+
+    function loaded() {
+      const username = document.getElementById("username");
+      username.focus();
+      username.addEventListener("keydown", keypress);
+      document
+        .getElementById("password")
+        .addEventListener("keydown", keypress);
+    }
+
+    async function LoginClicked() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const progressBar = document.getElementById("progress");
+
+      // Validate input fields
+      if (username === "" || password === "") {
+        showError("Please fill in all fields.");
+        return;
+      }
+
+      // Set request headers
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const s = sessionStorage.getItem("session");
+      if (s) {
+        const ws = JSON.parse(s);
+        if (ws.SessionGUID) {
+          headers["Session-GUID"] = ws.SessionGUID;
         }
+      }
 
-         
-    </script>
+      const btn = document.getElementById("okbtn");
+      btn.disabled = true;
+      progressBar.style.visibility = "visible";
+
+      // Send login data via fetch
+      console.log("xxxxxxxxx fetch : /login POST");
+      fetch("/api/login", {
+        method: "POST",
+        redirect: "follow",
+        body: JSON.stringify({
+          Username: username,
+          Password: password,
+        }),
+        headers: headers,
+      })
+        .then((response) => {
+          progressBar.style.visibility = "hidden";
+          if (response.redirected) {
+            console.log("xxxxxxxxx fetch redirected: ", response);
+            window.location.href = response.url;
+            return;
+          }
+          if (response.ok) {
+            // Login successful, redirect to home page
+            const redir = response.headers.get("Location");
+            if (redir == "") {
+              redir = "/";
+            }
+            console.log("redir:", redir);
+            window.location.href = redir; // Redirect to home page
+          } else {
+            console.log("response:", response);
+            // If login fails, show an error message
+            showError("Invalid username or password!");
+            let btn = document.getElementById("okbtn");
+            btn.disabled = false;
+          }
+        })
+        .catch((error) => {
+          // Handle network errors or other unexpected issues
+          progressBar.style.visibility = "hidden";
+          console.error("Error during login:", error);
+          showError("An error occurred. Please try again.");
+          btn.disabled = false;
+        });
+    }
+  </script>
 </body>
-
-
 </html>
