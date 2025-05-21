@@ -3,10 +3,10 @@ name: Trigger Azure DevOps Pipeline
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   trigger-azure-pipeline:
@@ -18,4 +18,3 @@ jobs:
           azure-devops-project-url: 'https://dev.azure.com/sritharandarshan1/DevOps-Demo-01'
           azure-pipeline-name: 'iamLeoKulendran.userLogin'
           azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
-
