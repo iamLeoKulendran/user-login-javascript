@@ -1,0 +1,30 @@
+trigger:
+- master
+
+pool:
+  name: my-msi-gmail  # Your agent pool
+
+variables:
+  azureSubscription: 'DevOps-Demo'
+  webAppName: 'Dual-Axis'
+
+steps:
+- task: ArchiveFiles@2
+  displayName: 'Archive static site'
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)'
+    includeRootFolder: false
+    archiveType: zip
+    archiveFile: '$(Build.ArtifactStagingDirectory)/site.zip'
+    replaceExistingArchive: true
+
+- publish: '$(Build.ArtifactStagingDirectory)/site.zip'
+  artifact: drop
+
+- task: AzureWebApp@1
+  displayName: 'Deploy to Azure Web App'
+  inputs:
+    azureSubscription: $(azureSubscription)
+    appType: webAppLinux
+    appName: $(webAppName)
+    package: '$(Build.ArtifactStagingDirectory)/site.zip'
