@@ -1,5 +1,5 @@
 trigger:
-- master
+- main
 
 pool:
   name: my-msi-gmail  # Your agent pool
